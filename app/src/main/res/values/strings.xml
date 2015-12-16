@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">Youtube Channel List</string>
+    <string name="internet_error_msg">No network available!</string>
+    <string name="error_init_failure">Initialization failure: Unable to play video</string>
+
+</resources>
