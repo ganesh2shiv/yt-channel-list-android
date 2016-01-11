@@ -16,10 +16,7 @@ Features
 Screenshots
 -----------
 
-![Screenshot 1](/art/01.png)
-
-![Screenshot 2](/art/02.png)
-
+![Screenshot 1](/art/01.png) ![Screenshot 2](/art/02.png)
 ![Screenshot 3](/art/03.png)
 
 To Do
