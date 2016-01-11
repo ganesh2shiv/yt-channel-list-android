@@ -1,53 +1,38 @@
-Jump Ninja
-==========
+Youtube Channel List
+====================
 
-A simple platform-based 2D game for Android built with AndEngine.
+Android sample project that fetch (liked) videos from your youtube channel.
 
-Description
------------
+Features
+--------
 
-I did this project for a friend of mine sometime back. I chose AndEngine honestly because I didn't do much research
-about all the Game Engines available back then and it turned out to be a mistake.
-
-Those of you who don't know, [AndEngine](https://github.com/nicolasgramlich/AndEngine) is pretty much dead now.
-
-There's really no reason that you should use AndEngine now. There are far better alternatives out there - LibGDX and Unity come to mind.
-
-This project was inspired from [this tutorial](http://www.matim-dev.com/full-game-tutorial---part-1.html).
-
-Build (apk)
------------
-
-You can download the debug build directly [from here](/apk/app-debug.apk).
+* Use Youtube Data v3 API 
+* Youtube OAuth Integration with auto renewal token
+* Endless scroll RecyclerView with ProgressBar
+* Handle configuration changes (orientation)
+* Support landscape and portrait mode
+* Fetch liked/watched videos from Channel/User
 
 Screenshots
 -----------
 
-![Game play](/art/game_play_01.png)
+![Screenshot 1](/art/01.png)
 
-![Game play](/art/game_play_02.png)
+![Screenshot 2](/art/02.png)
 
-![Main menu](/art/main_menu.png)
+![Screenshot 3](/art/03.png)
 
-![Sub menu](/art/sub_menu.png)
+To Do
+-----
 
-![High scores](/art/high_scores.png)
-
-![Music options](/art/music_options.png)
-
-![Splash screen](/art/splash_screen.png)
-
-**Note: I have tested it on only a couple of devices. So there's no guarantee that it will run on all devices.**
-
-Resources
----------
-
-You can download the psd version of all the image resources used in this project [from here](/art/). And feel free to tweak them as per your requirements.
+* Resolve fragment issues on config changes
+* Implement MVP architecture 
+* Include some unit tests if possible
 
 Credits
 -------
 
-Most image resources like background and player-sprite used in this project are taken from http://opengameart.org/
+Thanks to [mSobhy90](https://github.com/mSobhy90) for [this gist](https://gist.github.com/mSobhy90/cf7fa98803a0d7716a4a).
 
 License
 -------
