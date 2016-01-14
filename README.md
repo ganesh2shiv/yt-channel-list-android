@@ -1,17 +1,18 @@
 Youtube Channel List
 ====================
 
-Android sample project that fetch (liked) videos from your youtube channel.
+Android sample project that fetch (liked) videos from your youtube channel or any playlist.
 
 Features
 --------
 
 * Use Youtube Data v3 API 
-* Youtube OAuth Integration with auto renewal token
 * Endless scroll RecyclerView with ProgressBar
+* Youtube OAuth Integration with auto renewal token
+* Fetch liked/watched videos from your youtube channel
 * Handle configuration changes (orientation)
 * Support landscape and portrait mode
-* Fetch liked/watched videos from Channel/User
+* Fetch videos from any playlist
 
 Screenshots
 -----------
@@ -20,8 +21,8 @@ Screenshots
 ![Screenshot 3](/art/03.png) ![Screenshot 4](/art/04.png)
 ![Screenshot 5](/art/05.png)
 
-To Do
------
+TODO
+----
 
 * Resolve fragment issues on config changes
 * Implement MVP architecture 
