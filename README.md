@@ -17,9 +17,9 @@ Features
 Screenshots
 -----------
 
-![Screenshot 1](/art/01.png) ![Screenshot 2](/art/02.png)
-![Screenshot 3](/art/03.png) ![Screenshot 4](/art/04.png)
-![Screenshot 5](/art/05.png)
+![Screenshot 1](/art/screenshot_01.png) ![Screenshot 2](/art/screenshot_02.png)
+![Screenshot 3](/art/screenshot_03.png) ![Screenshot 4](/art/screenshot_04.png)
+![Screenshot 5](/art/screenshot_05.png)
 
 TODO
 ----
