@@ -2,6 +2,10 @@
 
     <string name="app_name">Youtube Channel List</string>
     <string name="internet_error_msg">No network available!</string>
-    <string name="error_init_failure">Initialization failure: Unable to play video</string>
+    <string name="error_init_failure_msg">Initialization failure: Unable to play video</string>
+    <string name="load_playlist_msg">Loading playlist</string>
+    <string name="fetch_token_msg">Fetching token</string>
+    <string name="token_error_msg">Token error!</string>
+    <string name="txt_enter_playlist_id">Enter playlist ID</string>
 
 </resources>

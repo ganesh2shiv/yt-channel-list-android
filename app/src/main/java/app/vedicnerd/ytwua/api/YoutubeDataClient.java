@@ -33,7 +33,11 @@ public class YoutubeDataClient {
 
         @Headers({"content-type: application/json"})
         @GET("/youtube/v3/playlistItems")
-        Call<PlaylistResponse> getPlaylist(@Header("Authorization") String OAuthToken, @QueryMap Map<String, String> query);
+        Call<PlaylistResponse> getOauthPlaylist(@Header("Authorization") String OAuthToken, @QueryMap Map<String, String> query);
+
+        @Headers({"content-type: application/json"})
+        @GET("/youtube/v3/playlistItems")
+        Call<PlaylistResponse> getAnyPlaylist(@QueryMap Map<String, String> query);
 
     }
 }

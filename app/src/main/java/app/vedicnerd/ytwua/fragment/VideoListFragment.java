@@ -3,6 +3,7 @@ package app.vedicnerd.ytwua.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +24,7 @@ import app.vedicnerd.ytwua.listener.OnLoadMoreListener;
 import app.vedicnerd.ytwua.pojo.PlaylistItem;
 import app.vedicnerd.ytwua.pojo.PlaylistResponse;
 import app.vedicnerd.ytwua.ui.DividerItemDecoration;
-import app.vedicnerd.ytwua.util.Utils;
+import app.vedicnerd.ytwua.util.Constants;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
@@ -98,7 +99,11 @@ public class VideoListFragment extends Fragment {
             adapter = new RecyclerViewFooterAdapter(rv1, mList, new OnLoadMoreListener() {
                 @Override
                 public void onLoadMore() {
-                    loadPlaylistMore();
+                    if (OAuthToken != null) {
+                        loadOauthPlaylistMore();
+                    } else {
+                        loadAnyPlaylistMore();
+                    }
                 }
             }, getContext());
 
@@ -108,7 +113,7 @@ public class VideoListFragment extends Fragment {
         }
     }
 
-    public void loadList(String OAuthToken, String playlistId, String nextPageToken, ArrayList<PlaylistItem> mList) {
+    public void loadList(final String OAuthToken, String playlistId, String nextPageToken, ArrayList<PlaylistItem> mList) {
         this.OAuthToken = OAuthToken;
         this.playlistId = playlistId;
         this.nextPageToken = nextPageToken;
@@ -117,7 +122,11 @@ public class VideoListFragment extends Fragment {
         adapter = new RecyclerViewFooterAdapter(rv1, mList, new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                loadPlaylistMore();
+                if (OAuthToken != null) {
+                    loadOauthPlaylistMore();
+                } else {
+                    loadAnyPlaylistMore();
+                }
             }
         }, getContext());
 
@@ -146,7 +155,7 @@ public class VideoListFragment extends Fragment {
         }
     }
 
-    private void loadPlaylistMore() {
+    private void loadOauthPlaylistMore() {
         adapter.addItem(null);
 
         Map<String, String> nextFilters = new HashMap<>();
@@ -155,7 +164,7 @@ public class VideoListFragment extends Fragment {
         nextFilters.put("pageToken", nextPageToken);
         nextFilters.put("playlistId", playlistId);
 
-        Call<PlaylistResponse> getPlaylistMore = CustomApplication.getYoutubeClient().getService().getPlaylist(OAuthToken, nextFilters);
+        Call<PlaylistResponse> getPlaylistMore = CustomApplication.getYoutubeClient().getService().getOauthPlaylist(OAuthToken, nextFilters);
         getPlaylistMore.enqueue(new Callback<PlaylistResponse>() {
 
             @Override
@@ -170,7 +179,38 @@ public class VideoListFragment extends Fragment {
             @Override
             public void onFailure(Throwable t) {
                 if (t instanceof IOException) {
-                    Utils.showToast(getContext(), getString(R.string.internet_error_msg));
+                    Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void loadAnyPlaylistMore() {
+        adapter.addItem(null);
+
+        Map<String, String> nextFilters = new HashMap<>();
+        nextFilters.put("part", "snippet");
+        nextFilters.put("maxResults", "50");
+        nextFilters.put("pageToken", nextPageToken);
+        nextFilters.put("playlistId", playlistId);
+        nextFilters.put("key", Constants.API_KEY);
+
+        Call<PlaylistResponse> getAnyPlaylistMore = CustomApplication.getYoutubeClient().getService().getAnyPlaylist(nextFilters);
+        getAnyPlaylistMore.enqueue(new Callback<PlaylistResponse>() {
+
+            @Override
+            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+                if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
+                    adapter.removeItem(null); // don't forget to remove the progress bar representative value
+                    updateAdapter(playlistResponse.body().getPlaylistItems(), false);
+                    nextPageToken = playlistResponse.body().getNextPageToken();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                if (t instanceof IOException) {
+                    Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_LONG).show();
                 }
             }
         });

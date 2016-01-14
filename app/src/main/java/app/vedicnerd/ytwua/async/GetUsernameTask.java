@@ -30,10 +30,10 @@ public class GetUsernameTask extends AsyncTask<Void, Void, String> {
     private InterfaceAsyncTask mListener;
     private GoogleAccountCredential mCredential;
 
-    public GetUsernameTask(Activity activity, InterfaceAsyncTask listener, GoogleAccountCredential credential) {
+    public GetUsernameTask(Activity activity, GoogleAccountCredential credential, InterfaceAsyncTask listener) {
         this.mActivity = activity;
-        this.mListener = listener;
         this.mCredential = credential;
+        this.mListener = listener;
     }
 
     /**

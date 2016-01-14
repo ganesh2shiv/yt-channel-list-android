@@ -1,6 +1,7 @@
 package app.vedicnerd.ytwua.fragment;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -8,7 +9,6 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import app.vedicnerd.ytwua.R;
 import app.vedicnerd.ytwua.util.Constants;
-import app.vedicnerd.ytwua.util.Utils;
 
 public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implements YouTubePlayer.OnInitializedListener {
 
@@ -67,7 +67,7 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implemen
             youTubeInitializationResult.getErrorDialog(getActivity(), RECOVERY_DIALOG_REQUEST).show();
         } else {
             if (isAdded()) {
-                Utils.showToast(getActivity().getApplicationContext(), getString(R.string.error_init_failure));
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_init_failure_msg), Toast.LENGTH_SHORT).show();
             }
         }
     }

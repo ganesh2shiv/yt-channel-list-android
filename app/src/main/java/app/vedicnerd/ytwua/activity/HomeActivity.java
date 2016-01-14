@@ -1,12 +1,20 @@
 package app.vedicnerd.ytwua.activity;
 
 import android.accounts.AccountManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.common.AccountPicker;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -26,7 +34,6 @@ import app.vedicnerd.ytwua.pojo.PlaylistItem;
 import app.vedicnerd.ytwua.pojo.PlaylistResponse;
 import app.vedicnerd.ytwua.util.Constants;
 import app.vedicnerd.ytwua.util.NetworkUtil;
-import app.vedicnerd.ytwua.util.Utils;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressDrawable;
 import retrofit.Call;
@@ -34,7 +41,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class HomeActivity extends AppCompatActivity implements GetUsernameTask.InterfaceAsyncTask, VideoListFragment.OnItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements VideoListFragment.OnItemSelectedListener, View.OnClickListener {
 
     private static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     private static final int REQUEST_AUTHORIZATION = 55664;
@@ -50,6 +57,10 @@ public class HomeActivity extends AppCompatActivity implements GetUsernameTask.I
 
     private VideoListFragment videoListFragment;
     private YoutubePlayerFragment videoPlayerFragment;
+
+    private FloatingActionButton fab;
+    private CoordinatorLayout mView;
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +83,7 @@ public class HomeActivity extends AppCompatActivity implements GetUsernameTask.I
     }
 
     private void initView() {
+        mView = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         mPocketBar = (SmoothProgressBar) findViewById(R.id.pocketProgressBar);
         mPocketBar.setSmoothProgressDrawableCallbacks(new SmoothProgressDrawable.Callbacks() {
             @Override
@@ -84,6 +96,10 @@ public class HomeActivity extends AppCompatActivity implements GetUsernameTask.I
                 mPocketBar.setVisibility(View.VISIBLE);
             }
         });
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
     }
 
     private void pickUserAccount() {
@@ -119,60 +135,137 @@ public class HomeActivity extends AppCompatActivity implements GetUsernameTask.I
         if (mEmail == null) {
             pickUserAccount();
         } else {
+            mSnackbar = Snackbar.make(mView, getString(R.string.fetch_token_msg), Snackbar.LENGTH_INDEFINITE);
+            mSnackbar.show();
             if (NetworkUtil.isNetworkAvailable(getApplicationContext())) {
-                GoogleAccountCredential googleCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(Constants.SCOPES));
+                final GoogleAccountCredential googleCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(Constants.SCOPES));
                 googleCredential.setBackOff(new ExponentialBackOff());
-                new GetUsernameTask(this, this, googleCredential.setSelectedAccountName(mEmail)).execute();
+                new GetUsernameTask(this, googleCredential.setSelectedAccountName(mEmail), new GetUsernameTask.InterfaceAsyncTask() {
+                    @Override
+                    public void onTokenReceived(String result) {
+                        if (result != null) {
+                            if (result.contains(" ")) {
+                                OAuthToken = "Bearer " + result.split(" ")[0];
+                                playlistId = result.split(" ")[1];
+                            } else {
+                                OAuthToken = "Bearer " + result;
+                            }
+                            getOauthPlaylist();
+                        } else {
+                            mSnackbar.setText(getString(R.string.token_error_msg));
+                        }
+                    }
+                }).execute();
+
             } else {
-                Utils.showToast(getApplicationContext(), getString(R.string.internet_error_msg));
+                mSnackbar.setText(getString(R.string.internet_error_msg));
+                mSnackbar.setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mSnackbar.dismiss();
+                        getToken();
+                    }
+                });
             }
         }
     }
 
-    @Override
-    public void onTokenReceived(String result) {
-        if (result != null) {
-            if (result.contains(" ")) {
-                OAuthToken = "Bearer " + result.split(" ")[0];
-                playlistId = result.split(" ")[1];
-            } else {
-                OAuthToken = "Bearer " + result;
+    private void getOauthPlaylist() {
+        mSnackbar.setText(getString(R.string.load_playlist_msg));
+        mSnackbar.show();
+        Map<String, String> firstFilters = new HashMap<>();
+        firstFilters.put("part", "snippet");
+        firstFilters.put("maxResults", "50");
+        firstFilters.put("playlistId", playlistId);
+
+        mPocketBar.progressiveStart();
+
+        Call<PlaylistResponse> getOauthPlaylist = CustomApplication.getYoutubeClient().getService().getOauthPlaylist(OAuthToken, firstFilters);
+        getOauthPlaylist.enqueue(new Callback<PlaylistResponse>() {
+            @Override
+            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+                mPocketBar.progressiveStop();
+                mSnackbar.dismiss();
+                if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
+                    totalResults = playlistResponse.body().getResponsePageInfo().getTotalResults();
+                    nextPageToken = playlistResponse.body().getNextPageToken();
+
+                    if (videoListFragment != null) {
+                        videoListFragment.loadList(OAuthToken, playlistId, nextPageToken, playlistResponse.body().getPlaylistItems());
+                    }
+
+                    if (videoPlayerFragment != null) {
+                        videoPlayerFragment.setVideoId(playlistResponse.body().getPlaylistItems().get(0).getItemSnippet().getSnippetResourceId().getVideoId());
+                    }
+                }
             }
-            Map<String, String> firstFilters = new HashMap<>();
-            firstFilters.put("part", "snippet");
-            firstFilters.put("maxResults", "50");
-            firstFilters.put("playlistId", playlistId);
 
-            mPocketBar.progressiveStart();
-
-            Call<PlaylistResponse> getPlaylist = CustomApplication.getYoutubeClient().getService().getPlaylist(OAuthToken, firstFilters);
-            getPlaylist.enqueue(new Callback<PlaylistResponse>() {
-                @Override
-                public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
-                    mPocketBar.progressiveStop();
-                    if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
-                        totalResults = playlistResponse.body().getResponsePageInfo().getTotalResults();
-                        nextPageToken = playlistResponse.body().getNextPageToken();
-
-                        if (videoListFragment != null) {
-                            videoListFragment.loadList(OAuthToken, playlistId, nextPageToken, playlistResponse.body().getPlaylistItems());
+            @Override
+            public void onFailure(Throwable t) {
+                mPocketBar.progressiveStop();
+                if (t instanceof IOException) {
+                    mSnackbar.setText(getString(R.string.internet_error_msg));
+                    mSnackbar.setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mSnackbar.dismiss();
+                            getOauthPlaylist();
                         }
+                    });
+                }
+            }
+        });
+    }
 
-                        if (videoPlayerFragment != null) {
-                            videoPlayerFragment.setVideoId(playlistResponse.body().getPlaylistItems().get(0).getItemSnippet().getSnippetResourceId().getVideoId());
-                        }
+    private void getAnyPlaylist() {
+
+        mSnackbar.setText(getString(R.string.load_playlist_msg));
+        mSnackbar.show();
+
+        Map<String, String> firstFilters = new HashMap<>();
+        firstFilters.put("part", "snippet");
+        firstFilters.put("maxResults", "50");
+        firstFilters.put("playlistId", playlistId);
+        firstFilters.put("key", Constants.API_KEY);
+
+        mPocketBar.progressiveStart();
+
+        Call<PlaylistResponse> getAnyPlaylist = CustomApplication.getYoutubeClient().getService().getAnyPlaylist(firstFilters);
+        getAnyPlaylist.enqueue(new Callback<PlaylistResponse>() {
+            @Override
+            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+                mPocketBar.progressiveStop();
+                mSnackbar.dismiss();
+
+                if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
+                    totalResults = playlistResponse.body().getResponsePageInfo().getTotalResults();
+                    nextPageToken = playlistResponse.body().getNextPageToken();
+
+                    if (videoListFragment != null) {
+                        videoListFragment.loadList(null, playlistId, nextPageToken, playlistResponse.body().getPlaylistItems());
+                    }
+
+                    if (videoPlayerFragment != null) {
+                        videoPlayerFragment.setVideoId(playlistResponse.body().getPlaylistItems().get(0).getItemSnippet().getSnippetResourceId().getVideoId());
                     }
                 }
+            }
 
-                @Override
-                public void onFailure(Throwable t) {
-                    mPocketBar.progressiveStop();
-                    if (t instanceof IOException) {
-                        Utils.showToast(getApplicationContext(), getString(R.string.internet_error_msg));
-                    }
+            @Override
+            public void onFailure(Throwable t) {
+                mPocketBar.progressiveStop();
+                if (t instanceof IOException) {
+                    mSnackbar.setText(getString(R.string.internet_error_msg));
+                    mSnackbar.setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mSnackbar.dismiss();
+                            getAnyPlaylist();
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
     }
 
     private void switchVideoPlayerFragment(Fragment mTarget, String tag) {
@@ -199,5 +292,39 @@ public class HomeActivity extends AppCompatActivity implements GetUsernameTask.I
         if (videoPlayerFragment != null) {
             videoPlayerFragment.setVideoId(playlistItem.getItemSnippet().getSnippetResourceId().getVideoId());
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                fab.hide();
+                displayPlaylistDialog();
+                break;
+        }
+    }
+
+    public void displayPlaylistDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.playlist_dialog_layout, null);
+        final EditText etPlaylistId = (EditText) alertLayout.findViewById(R.id.et_playlist_id);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(alertLayout);
+        alert.setCancelable(true);
+        alert.setNegativeButton("Cancel", null);
+        alert.setPositiveButton("Fetch", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // code for matching password
+                if (!TextUtils.isEmpty(etPlaylistId.getText().toString())) {
+                    playlistId = "PLAE6B03CA849AD332";
+                    getAnyPlaylist();
+                }
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 }
