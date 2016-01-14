@@ -319,7 +319,7 @@ public class HomeActivity extends AppCompatActivity implements VideoListFragment
             public void onClick(DialogInterface dialog, int which) {
                 // code for matching password
                 if (!TextUtils.isEmpty(etPlaylistId.getText().toString())) {
-                    playlistId = "PLAE6B03CA849AD332";
+                    playlistId = etPlaylistId.getText().toString().trim();
                     getAnyPlaylist();
                 }
             }
