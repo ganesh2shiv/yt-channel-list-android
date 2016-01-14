@@ -17,9 +17,11 @@ Features
 Screenshots
 -----------
 
-![Screenshot 1](/art/01.png) ![Screenshot 2](/art/02.png)
-![Screenshot 3](/art/03.png) ![Screenshot 4](/art/04.png)
-![Screenshot 5](/art/05.png)
+<img src="/art/01.png">
+<img src="/art/02.png" hspace="70">
+<img src="/art/03.png" vspace="50">
+<img src="/art/04.png" hspace="70" vspace="50">
+<img src="/art/05.png" hspace ="35">
 
 TODO
 ----
