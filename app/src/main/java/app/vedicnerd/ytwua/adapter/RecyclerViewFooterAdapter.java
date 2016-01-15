@@ -55,7 +55,7 @@ public class RecyclerViewFooterAdapter extends AbstractRecyclerViewFooterAdapter
         }
     }
 
-    private static OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     // Define the listener interface
     public interface OnItemClickListener {
