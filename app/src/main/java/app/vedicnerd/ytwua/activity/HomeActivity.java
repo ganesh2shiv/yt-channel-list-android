@@ -100,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements VideoListFragment
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        mSnackbar = Snackbar.make(mView, getString(R.string.fetch_token_msg), Snackbar.LENGTH_INDEFINITE);
     }
 
     private void pickUserAccount() {
@@ -135,7 +136,6 @@ public class HomeActivity extends AppCompatActivity implements VideoListFragment
         if (mEmail == null) {
             pickUserAccount();
         } else {
-            mSnackbar = Snackbar.make(mView, getString(R.string.fetch_token_msg), Snackbar.LENGTH_INDEFINITE);
             mSnackbar.show();
             if (NetworkUtil.isNetworkAvailable(getApplicationContext())) {
                 final GoogleAccountCredential googleCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(Constants.SCOPES));
