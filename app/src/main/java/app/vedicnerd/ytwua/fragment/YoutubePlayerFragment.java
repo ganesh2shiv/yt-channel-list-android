@@ -48,9 +48,9 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implemen
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean restored) {
         youtubePlayer = player;
-//        youtubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-        youtubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
+//      youtubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
         youtubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
+        youtubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
         if (videoId != null) {
             if (restored) {
                 youtubePlayer.play();
@@ -86,4 +86,5 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implemen
         super.onSaveInstanceState(bundle);
         bundle.putString(KEY_VIDEO_ID, videoId);
     }
+
 }
