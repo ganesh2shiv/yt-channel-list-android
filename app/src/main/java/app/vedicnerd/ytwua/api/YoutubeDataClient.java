@@ -13,7 +13,7 @@ import retrofit.http.QueryMap;
 
 public class YoutubeDataClient {
 
-    private InterfaceYoutubeData apiService;
+    private final InterfaceYoutubeData apiService;
 
     public YoutubeDataClient() {
         String BASE_URL = "https://www.googleapis.com/";

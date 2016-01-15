@@ -20,7 +20,7 @@ import app.vedicnerd.ytwua.pojo.PlaylistItem;
 
 public class RecyclerViewFooterAdapter extends AbstractRecyclerViewFooterAdapter<PlaylistItem> {
 
-    private Context mContext;
+    private final Context mContext;
 
     public RecyclerViewFooterAdapter(RecyclerView recyclerView, List<PlaylistItem> dataset, OnLoadMoreListener onLoadMoreListener, Context mContext) {
         super(recyclerView, dataset, onLoadMoreListener);
@@ -68,8 +68,9 @@ public class RecyclerViewFooterAdapter extends AbstractRecyclerViewFooterAdapter
 
     class PlaylistViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView video_title, video_desc;
-        public ImageView video_thumbnail;
+        public final TextView video_title;
+        public final TextView video_desc;
+        public final ImageView video_thumbnail;
 
         public PlaylistViewHolder(View itemView) {
             super(itemView);

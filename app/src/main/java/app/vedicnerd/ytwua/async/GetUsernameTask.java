@@ -26,9 +26,9 @@ public class GetUsernameTask extends AsyncTask<Void, Void, String> {
     private static final int REQUEST_AUTHORIZATION = 55664;
     private final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     private final JsonFactory jsonFactory = new GsonFactory();
-    private Activity mActivity;
-    private InterfaceAsyncTask mListener;
-    private GoogleAccountCredential mCredential;
+    private final Activity mActivity;
+    private final InterfaceAsyncTask mListener;
+    private final GoogleAccountCredential mCredential;
 
     public GetUsernameTask(Activity activity, GoogleAccountCredential credential, InterfaceAsyncTask listener) {
         this.mActivity = activity;

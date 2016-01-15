@@ -15,14 +15,14 @@ import app.vedicnerd.ytwua.listener.OnLoadMoreListener;
 
 public abstract class AbstractRecyclerViewFooterAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private int visibleThreshold = 5;
+    private final int visibleThreshold = 5;
 
     private int lastVisibleItem;
 
     private final int ITEM_VIEW_TYPE_BASIC = 0;
     private final int ITEM_VIEW_TYPE_FOOTER = 1;
 
-    private List<T> dataSet;
+    private final List<T> dataSet;
 
     private int firstVisibleItem, totalItemCount;
     private boolean loading;
@@ -147,7 +147,7 @@ public abstract class AbstractRecyclerViewFooterAdapter<T> extends RecyclerView.
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
 
-        public ProgressBar progressBar;
+        public final ProgressBar progressBar;
 
         public ProgressViewHolder(final View itemView) {
             super(itemView);
