@@ -3,13 +3,13 @@ package app.vedicnerd.ytwua.api;
 import java.util.Map;
 
 import app.vedicnerd.ytwua.pojo.PlaylistResponse;
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Headers;
-import retrofit.http.QueryMap;
+import retrofit2.Call;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.QueryMap;
 
 public class YoutubeDataClient {
 

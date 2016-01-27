@@ -36,10 +36,9 @@ import app.vedicnerd.ytwua.util.Constants;
 import app.vedicnerd.ytwua.util.NetworkUtil;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressDrawable;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements VideoListFragment.OnItemSelectedListener, View.OnClickListener {
 
@@ -183,7 +182,7 @@ public class HomeActivity extends AppCompatActivity implements VideoListFragment
         Call<PlaylistResponse> getOauthPlaylist = CustomApplication.getYoutubeClient().getService().getOauthPlaylist(OAuthToken, firstFilters);
         getOauthPlaylist.enqueue(new Callback<PlaylistResponse>() {
             @Override
-            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+            public void onResponse(Response<PlaylistResponse> playlistResponse) {
                 mPocketBar.progressiveStop();
                 mSnackbar.dismiss();
                 if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
@@ -233,7 +232,7 @@ public class HomeActivity extends AppCompatActivity implements VideoListFragment
         Call<PlaylistResponse> getAnyPlaylist = CustomApplication.getYoutubeClient().getService().getAnyPlaylist(firstFilters);
         getAnyPlaylist.enqueue(new Callback<PlaylistResponse>() {
             @Override
-            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+            public void onResponse(Response<PlaylistResponse> playlistResponse) {
                 mPocketBar.progressiveStop();
                 mSnackbar.dismiss();
 
