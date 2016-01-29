@@ -28,10 +28,9 @@ import app.vedicnerd.ytwua.util.Constants;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VideoListFragment extends Fragment {
 
@@ -46,10 +45,18 @@ public class VideoListFragment extends Fragment {
 
     private ArrayList<PlaylistItem> mList;
 
+    private Snackbar mSnackbar;
+
     private OnItemSelectedListener listener;
 
     public static VideoListFragment newInstance() {
         return new VideoListFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
@@ -73,7 +80,7 @@ public class VideoListFragment extends Fragment {
                 listener = (OnItemSelectedListener) activity;
             } else {
                 throw new ClassCastException(activity.toString()
-                        + " must implement MyListFragment.OnItemSelectedListener");
+                        + " must implement OnItemSelectedListener");
             }
         }
     }
@@ -107,10 +114,19 @@ public class VideoListFragment extends Fragment {
                 }
             }, getContext());
 
+            adapter.setOnItemClickListener(new RecyclerViewFooterAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(PlaylistItem playlistItem) {
+                    listener.onItemSelected(playlistItem);
+                }
+            });
+
             AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
             ScaleInAnimationAdapter scaleAdapter = new ScaleInAnimationAdapter(alphaAdapter);
             rv1.setAdapter(scaleAdapter);
         }
+
+        mSnackbar = Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_INDEFINITE);
     }
 
     public void loadList(final String OAuthToken, String playlistId, String nextPageToken, ArrayList<PlaylistItem> mList) {
@@ -164,13 +180,14 @@ public class VideoListFragment extends Fragment {
         nextFilters.put("pageToken", nextPageToken);
         nextFilters.put("playlistId", playlistId);
 
-        Call<PlaylistResponse> getPlaylistMore = CustomApplication.getYoutubeClient().getService().getOauthPlaylist(OAuthToken, nextFilters);
-        getPlaylistMore.enqueue(new Callback<PlaylistResponse>() {
+        Call<PlaylistResponse> getOauthPlaylistMore = CustomApplication.getYoutubeClient().getService().getOauthPlaylist(OAuthToken, nextFilters);
+        getOauthPlaylistMore.enqueue(new Callback<PlaylistResponse>() {
 
             @Override
-            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+            public void onResponse(Response<PlaylistResponse> playlistResponse) {
+
+                adapter.removeItem(null);
                 if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
-                    adapter.removeItem(null); // don't forget to remove the progress bar representative value
                     updateAdapter(playlistResponse.body().getPlaylistItems(), false);
                     nextPageToken = playlistResponse.body().getNextPageToken();
                 }
@@ -178,8 +195,16 @@ public class VideoListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
-                if (t instanceof IOException) {
-                    Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_LONG).show();
+                adapter.removeItem(null);
+
+                if (t instanceof IOException && isAdded()) {
+                    mSnackbar.setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mSnackbar.dismiss();
+                            loadAnyPlaylistMore();
+                        }
+                    });
                 }
             }
         });
@@ -199,7 +224,7 @@ public class VideoListFragment extends Fragment {
         getAnyPlaylistMore.enqueue(new Callback<PlaylistResponse>() {
 
             @Override
-            public void onResponse(Response<PlaylistResponse> playlistResponse, Retrofit retrofit) {
+            public void onResponse(Response<PlaylistResponse> playlistResponse) {
                 if (playlistResponse.isSuccess() && playlistResponse.body().getPlaylistItems().size() != 0) {
                     adapter.removeItem(null); // don't forget to remove the progress bar representative value
                     updateAdapter(playlistResponse.body().getPlaylistItems(), false);
@@ -209,15 +234,23 @@ public class VideoListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
-                if (t instanceof IOException) {
-                    Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_LONG).show();
+                if (t instanceof IOException && isAdded()) {
+                    adapter.removeItem(null);
+                    mSnackbar.setAction("Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mSnackbar.dismiss();
+                            loadAnyPlaylistMore();
+                        }
+                    });
                 }
             }
         });
     }
 
     public interface OnItemSelectedListener {
-        // This can be any number of events to be sent to the activity
+
         void onItemSelected(PlaylistItem playlistItem);
+
     }
 }

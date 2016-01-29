@@ -50,7 +50,6 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implemen
         youtubePlayer = player;
 //      youtubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
         youtubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-        youtubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
         if (videoId != null) {
             if (restored) {
                 youtubePlayer.play();
@@ -62,7 +61,6 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment implemen
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-        youtubePlayer = null;
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(getActivity(), RECOVERY_DIALOG_REQUEST).show();
         } else {
