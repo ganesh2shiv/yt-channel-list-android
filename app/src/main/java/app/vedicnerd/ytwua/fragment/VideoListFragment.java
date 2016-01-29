@@ -126,7 +126,7 @@ public class VideoListFragment extends Fragment {
             rv1.setAdapter(scaleAdapter);
         }
 
-        mSnackbar = Snackbar.make(mView, getString(R.string.internet_error_msg), Snackbar.LENGTH_INDEFINITE);
+        mSnackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), getString(R.string.internet_error_msg), Snackbar.LENGTH_INDEFINITE);
     }
 
     public void loadList(final String OAuthToken, String playlistId, String nextPageToken, ArrayList<PlaylistItem> mList) {
