@@ -26,9 +26,10 @@ Screenshots
 TODO
 ----
 
-* Resolve fragment issues on config changes
-* Implement MVP architecture 
-* Include some unit tests if possible
+- [x] Fix fragment issue on config changes
+- [ ] Fix duplicate items in list issue
+- [ ] Include unit tests if possible
+- [ ] Implement MVP architecture 
 
 Credits
 -------
