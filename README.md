@@ -23,6 +23,44 @@ Screenshots
 <img src="/art/04.png" hspace="70" vspace="50">
 <img src="/art/05.png" hspace ="35">
 
+Can I haz?
+----------
+Sure. Just follow the following steps after downloading this project.
+
+1. Open [Google developers console](https://console.developers.google.com/project) and click on the "Create project" button
+
+   ![Screenshot 1](/art/steps/01.png)
+
+2. Enter the project name and click on the "Create" button
+
+   ![Screenshot 2](/art/steps/02.png)
+
+3. You would be redirected to the created project dashboard
+
+4. Click on the "Use Google APIs" card on the screen.
+
+   ![Screenshot 3](/art/steps/03.png)
+
+5. Click on the Youtube Data v3 API and enable it.
+
+6. Click on "Credentials" option in the left pane
+
+7. Click on "New Credentials" dropdown button
+
+   ![Screenshot 4](/art/steps/04.png)
+
+8. Select "API key" option in the dropdown
+
+9. Click on the "Android key" button
+
+   (You can restrict the API key usage to your app only by adding package name and fingerprint but that's optional)
+
+10. Click on the "Create" button
+
+11. Copy the API key and [paste it here](https://github.com/ganesh2shiv/yt-channel-list-android/blob/master/app/src/main/java/app/vedicnerd/ytwua/util/Constants.java#L11)
+
+12. And that's it. You are done.
+
 TODO
 ----
 
