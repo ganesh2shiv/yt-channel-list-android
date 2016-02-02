@@ -3,7 +3,6 @@ Youtube Channel List
 
 Android sample project that fetch (liked) videos from your youtube channel or any playlist.
 
-
 Features
 --------
 
@@ -15,7 +14,6 @@ Features
 * Support landscape and portrait mode
 * Fetch videos from any playlist
 
-
 Screenshots
 -----------
 
@@ -24,7 +22,6 @@ Screenshots
 <img src="/art/03.png" vspace="50">
 <img src="/art/04.png" hspace="70" vspace="50">
 <img src="/art/05.png" hspace ="35">
-
 
 Can I haz?
 ----------
@@ -65,7 +62,6 @@ Sure. Just follow the following steps after downloading this project.
 
 12. And that's it. You are done.
 
-
 TODO
 ----
 
@@ -73,7 +69,6 @@ TODO
 - [ ] Fix duplicate items in list issue
 - [ ] Include unit tests if possible
 - [ ] Implement MVP architecture 
-
 
 Credits
 -------
