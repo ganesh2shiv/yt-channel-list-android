@@ -75,7 +75,6 @@ Credits
 
 Thanks to [mSobhy90](https://github.com/mSobhy90) for [this gist](https://gist.github.com/mSobhy90/cf7fa98803a0d7716a4a).
 
-
 License
 -------
 
