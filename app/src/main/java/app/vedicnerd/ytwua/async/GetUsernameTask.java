@@ -68,9 +68,17 @@ public class GetUsernameTask extends AsyncTask<Void, Void, String> {
             ChannelListResponse clr = youtube.channels()
                     .list("contentDetails").setMine(true).execute();
 
+            /* It's important to have at least one youtube channel associated with
+            the logged in google account (on the device) otherwise channelsList will be empty */
+
             List<Channel> channelsList = clr.getItems();
 
-            if (channelsList != null) {
+            if (channelsList != null && channelsList.size() != 0) {
+
+                /* Here we get the liked videos (by the user) playlist ID using getLikes() method
+                 but you can also use getWatchHistory(), getWatchLater(), getFavorites(), and getUploads()
+                 methods depending on your requirement */
+
                 String playlistId = channelsList.get(0).getContentDetails().getRelatedPlaylists().getLikes();
 
                 if (playlistId != null) {
