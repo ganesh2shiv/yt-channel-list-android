@@ -38,29 +38,45 @@ Sure. Just follow the following steps after downloading this project.
 
 3. You would be redirected to the created project dashboard
 
-4. Click on the "Use Google APIs" card on the screen.
+4. Click on the "Enable and manage APIs" card on the screen.
 
    ![Screenshot 3](/art/steps/03.png)
 
 5. Click on the Youtube Data v3 API and enable it.
 
-6. Click on "Credentials" option in the left pane
-
-7. Click on "New Credentials" dropdown button
+6. Click on the "Go to Credentials" button
 
    ![Screenshot 4](/art/steps/04.png)
 
-8. Select "API key" option in the dropdown
+7. Click on the "What credentials do I need?" button
 
-9. Click on the "Android key" button
+   ![Screenshot 5](/art/steps/05.png)
+
+8. Enter the SHA1 signing-certificate fingerprint 
+
+9. Enter the package name (app.vedicnerd.ytwua)
+
+10. Click on the "Create client ID" button
+   
+   ![Screenshot 6](/art/steps/06.png)
+
+11. Enter the product name and click on the "Continue" button
+
+12. Click on the "Done" button
+
+13. Click on "New Credentials" dropdown button
+
+14. Select "API key" option in the dropdown
+
+15. Click on the "Android key" button
+
+16. Click on the "Create" button
 
    (You can restrict the API key usage to your app only by adding package name and fingerprint but that's optional)
 
-10. Click on the "Create" button
+17. Copy the API key and [paste it here](https://github.com/ganesh2shiv/yt-channel-list-android/blob/master/app/src/main/java/app/vedicnerd/ytwua/util/Constants.java#L11)
 
-11. Copy the API key and [paste it here](https://github.com/ganesh2shiv/yt-channel-list-android/blob/master/app/src/main/java/app/vedicnerd/ytwua/util/Constants.java#L11)
-
-12. And that's it. You are done.
+18. Done. Now you can run the app.
 
 TODO
 ----
