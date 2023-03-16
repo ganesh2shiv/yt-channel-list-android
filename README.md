@@ -17,11 +17,11 @@ Features
 Screenshots
 -----------
 
-<img src="/art/01.png">
-<img src="/art/02.png" hspace="70">
-<img src="/art/03.png" vspace="50">
-<img src="/art/04.png" hspace="70" vspace="50">
-<img src="/art/05.png" hspace ="35">
+<p align="center">
+    <img style="width:35%" src="/art/01.png" hspace="50"><img style="width:35%" src="/art/02.png"><br/><br/>
+    <img style="width:35%" src="/art/03.png" hspace="50"><img style="width:35%" src="/art/04.png"><br/><br/>
+    <img style="width:70%" src="/art/05.png">
+</p>
 
 Can I haz?
 ----------
